@@ -20,6 +20,10 @@
     <MSDeploy Include="./thirdparty/tools/Microsoft Web Deploy/msdeploy.exe" />
     <PackageFile Include="./buildartifacts/package/Test.Web.zip"/>
   </ItemGroup>
+
+  <PropertyGroup>
+    <WebserverName>win8sandbox</WebserverName>
+  </PropertyGroup>
   
   <Target Name="Clean">
     <RemoveDir Directories="@(BuildArtifacts)"/>
@@ -49,6 +53,13 @@
     </PropertyGroup>
     <MakeDir Directories='$(PackageDir)'/>
     <Exec Command='"@(MSDeploy)" -verb:sync -source:iisApp="$(Source)" -dest:package="$(Destination)" '/>
+  </Target>
+
+  <Target Name='Deploy' DependsOnTargets='Package'>
+    <PropertyGroup>
+      <Source>%(PackageFile.FullPath)</Source>
+    </PropertyGroup>
+    <Exec Command='"@(MSDeploy)" -verb:sync -source:package="$(Source)" -dest:iisApp=TestWeb,computerName=$(WebserverName),username=administrator,password=pass@word1' />
   </Target>
   
 </Project>
