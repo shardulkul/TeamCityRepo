@@ -41,7 +41,7 @@
     <Exec Command='taskkill /im WebDev.WebServer40.exe' IgnoreExitCode='true' IgnoreStandardErrorWarningFormat='true' />
   </Target>
 
-  <Target Name='Package' DependsOnTargets='Compile'>
+  <Target Name='Package'>
     <PropertyGroup>
       <PackageDir>%(PackageFile.RootDir)%(PackageFile.Directory)</PackageDir>
       <Source>%(Website.FullPath)</Source>
