@@ -15,6 +15,11 @@
     <Cassini Include="$(CommonProgramFiles)\Microsoft Shared\DevServer\11.0\WebDev.WebServer40.exe"/>
     <Website Include="./buildartifacts/_PublishedWebsites/Test.Web"/>
   </ItemGroup>
+
+  <ItemGroup>
+    <MSDeploy Include="./thirdparty/tools/Microsoft Web Deploy/msdeploy.exe" />
+    <PackageFile Include="./buildartifacts/package/Test.Web.zip"/>
+  </ItemGroup>
   
   <Target Name="Clean">
     <RemoveDir Directories="@(BuildArtifacts)"/>
@@ -29,11 +34,21 @@
   </Target>
 
   <Target Name="StartWebsite" DependsOnTargets="StopWebsite;Compile">
-    <AsyncExec  Command='"@(Cassini)" /port:9999 /path:"%(Website.FullPath)" /vpath:' />
+    <AsyncExec Command='"@(Cassini)" /port:9999 /path:"%(Website.FullPath)" /vpath:' />
   </Target>
 
   <Target Name='StopWebsite'>
-    <Exec Command='taskkill /f /im WebDev.WebServer40.exe' IgnoreExitCode='true' IgnoreStandardErrorWarningFormat='true' />
+    <Exec Command='taskkill /im WebDev.WebServer40.exe' IgnoreExitCode='true' IgnoreStandardErrorWarningFormat='true' />
+  </Target>
+
+  <Target Name='Package' DependsOnTargets='Compile'>
+    <PropertyGroup>
+      <PackageDir>%(PackageFile.RootDir)%(PackageFile.Directory)</PackageDir>
+      <Source>%(Website.FullPath)</Source>
+      <Destination>%(PackageFile.FullPath)</Destination>
+    </PropertyGroup>
+    <MakeDir Directories='$(PackageDir)'/>
+    <Exec Command='"@(MSDeploy)" -verb:sync -source:iisApp="$(Source)" -dest:package="$(Destination)" '/>
   </Target>
   
 </Project>
