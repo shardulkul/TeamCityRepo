@@ -10,7 +10,7 @@ namespace Test.Web.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Message = "We just went from check-in to deployment!!!";
+            ViewBag.Message = "We just went!!!";
 
             return View();
         }
